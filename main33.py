@@ -132,7 +132,7 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 oauth2_scheme = OAuth2PasswordBearer(
     tokenUrl="token",
-    scopes={"me": "Read information about the current user.", "item": "Read items."}
+    scopes={"me": "Read information about the current user.", "item": "Read items."},
 )
 
 app = FastAPI()
@@ -173,7 +173,8 @@ def create_access_token(data: dict, expires_delta: Union[timedelta, None] = None
 
 
 async def get_current_user(
-        security_scopes: SecurityScopes, token: str = Depends(oauth2_scheme),
+    security_scopes: SecurityScopes,
+    token: str = Depends(oauth2_scheme),
 ):
     if security_scopes.scopes:
         authenticate_value = f'Bearer scope="{security_scopes.scope_str}"'
@@ -207,7 +208,7 @@ async def get_current_user(
 
 
 async def get_current_active_user(
-        current_user: User = Security(get_current_user, scopes=["me"])
+    current_user: User = Security(get_current_user, scopes=["me"])
 ):
     if current_user.disabled:
         raise HTTPException(status_code=400, detail="Inactive user")
@@ -234,7 +235,7 @@ async def read_users_me(current_user: User = Depends(get_current_active_user)):
 
 @app.get("/users/me/items/")
 async def read_own_items(
-        current_user: User = Security(get_current_active_user, scopes=["items"])
+    current_user: User = Security(get_current_active_user, scopes=["items"])
 ):
     return [{"item_id": "Foo", "owner": current_user.username}]
 
