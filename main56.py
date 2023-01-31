@@ -24,7 +24,9 @@ app = FastAPI()
 
 
 async def common_parameters(
-        q: Union[str, None] = None, skip: int = 0, limit: int = 100,
+    q: Union[str, None] = None,
+    skip: int = 0,
+    limit: int = 100,
 ):
     return {"q": q, "skip": skip, "limit": limit}
 
@@ -72,5 +74,5 @@ def test_override_in_items_with_params():
     assert response.status_code == 200
     assert response.json() == {
         "message": "Hello Items!",
-        "params": {"q": "foo", "skip": 5, "limit": 10}
+        "params": {"q": "foo", "skip": 5, "limit": 10},
     }
